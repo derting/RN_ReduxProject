@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         flex: 0, flexDirection: 'row' 
     },
     keyNumber: {
-        fontSize: 16,
+        fontSize: 17,
         width: 40,
         fontWeight: 'bold',
         paddingTop: 10,
@@ -32,13 +32,13 @@ const styles = StyleSheet.create({
     },
     mainContent: {
         paddingTop: 3,
-        fontSize: 14,
+        fontSize: 16,
         height: 20
     },
     subContent: {
-        paddingTop: 3,
-        fontSize: 11,
-        height: 20
+        paddingTop: 4,
+        fontSize: 13,
+        height: 22
     }
 });
 
