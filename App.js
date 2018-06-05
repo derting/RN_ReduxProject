@@ -10,7 +10,8 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput
+  TextInput,
+  Alert
 } from 'react-native';
 
 import PlaceInput from "./src/components/PlaceInput/PlaceInput";
@@ -26,22 +27,43 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
+const AppVersion = "V1.0.0";
 
 export default class App extends Component {
-  constructor() {
-    super();
 
+  constructor() {
+
+    super();
     var all = hymnary.hymnary.map(function (obj) {
       var newObj = { key: obj.index, name: obj.title, content: obj.content, image: { url: "https://c1.staticflickr.com/5/4096/4744241983_34023bf303_b.jpg" } }
       return newObj
     });
 
     this.state = {
+      version: AppVersion,
       displayList: all,
       places: all,
       selectedPlace: null
     };
+
+    //Fetch from API
+    var req = new Request('http://wired-glider-206113.appspot.com/api/muxi/version', {
+      method: 'GET',
+      cache: 'reload'
+    });
+    fetch(req).then(function (response) {
+      return response.json();
+    }).then(function (json) {
+      //this.setState({ version: json.version });
+      if(AppVersion != json.version)
+      {
+        AlertMessage("Please Upgrade APP.", 
+        "We have a newest version on App store. Please upgrade it to take advantage of the new features and performance improvement.\n\n Next version: " + json.version)
+      }
+    }.bind(this));
+
   }
+
 
   //Filter
   placeFilterHandler = val => {
@@ -66,6 +88,7 @@ export default class App extends Component {
         });
     }
   };
+
   //Select
   placeSelectedHandler = key => {
     this.setState(prevState => {
@@ -85,6 +108,7 @@ export default class App extends Component {
   };
 
   render() {
+
     return (
       <View style={styles.container}>
         <PlaceDetail
@@ -92,10 +116,11 @@ export default class App extends Component {
           onModalClosed={this.modalClosedHandler}
         />
 
-
-        <Text style={styles.welcome}>
-          聖徒詩歌 Hymnary
-        </Text>
+        <View style={styles.navBar}>
+          <Text style={styles.navBarButton}></Text>
+          <Text style={styles.navBarHeader}>聖徒詩歌 Hymnary</Text>
+          <Text style={styles.navBarButton}>{this.state.version}</Text>
+        </View>
 
         <TextInput
           placeholder="Seacher here..."
@@ -111,18 +136,56 @@ export default class App extends Component {
   }
 }
 
+
+function AlertMessage(Title, Msg) {
+  Alert.alert(Title, Msg,
+    [
+      { text: 'Ask me later', onPress: () => console.log('Ask me later pressed') },
+      { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+      { text: 'OK', onPress: () => console.log('OK Pressed') },
+    ],
+    { cancelable: false }
+  )
+}
+
 const styles = StyleSheet.create({
+
+  navBar: {
+    flexDirection: 'row',
+    paddingTop: 30,
+    height: 70,
+    backgroundColor: '#FFF'
+  },
+  navBarButton: {
+    color: '#000',
+    textAlign:'center',
+    width: 64,
+    paddingTop: 7,
+  },
+  navBarHeader: {
+    flex: 1,
+    color: '#000',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 22
+  },
+
+
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'center', justifyContent: 'flex-end',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
   welcome: {
-    fontSize: 22,
+    
     textAlign: 'center',
     margin: 20,
 
+  },
+  version: {
+    justifyContent: 'flex-end',
+    marginTop: 20
   },
   instructions: {
     textAlign: 'center',
