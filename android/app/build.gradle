@@ -94,17 +94,26 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.3"
 
     defaultConfig {
-        applicationId "com.rn_reduxproject"
+        applicationId "com.muxihymnary"
         minSdkVersion 16
-        targetSdkVersion 22
-        versionCode 1
+        targetSdkVersion 26
+        versionCode 2
         versionName "1.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
+        }
+    }
+    //DT add...
+    signingConfigs {
+        release {
+            storeFile file(MUXIHYMNARY_RELEASE_STORE_FILE)
+            storePassword MUXIHYMNARY_RELEASE_STORE_PASSWORD
+            keyAlias MUXIHYMNARY_RELEASE_KEY_ALIAS
+            keyPassword MUXIHYMNARY_RELEASE_KEY_PASSWORD
         }
     }
     splits {
@@ -119,6 +128,8 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            //DT add...
+            signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release
